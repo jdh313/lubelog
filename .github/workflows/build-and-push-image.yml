@@ -25,14 +25,18 @@ jobs:
       #     registry: ghcr.io
       #     username: "hargata"
       #     password: "${{ secrets.GHCR_PAT }}"
-      - name: Generate Tag from Release
-        id: releaseh_tag
-        if: github.event.release
-        run: echo "IMAGE_TAG=$(echo ${{ github.event.release.tag_name }})"
-      - name: Generate Tag from Branch
-        id: branch_tag
-        if: github.event_name == 'push'
-        run: echo "IMAGE_TAG=main"
+      - name: Docker Metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          context: workflow
+          images: |
+            hargata/lubelogger
+            ghcr.io/hargata/lubelogger
+          tags: |
+            type=edge,branch=main
+            type=ref,event=tag
+
       # - name: Build and push
       #   uses: docker/build-push-action@v5
       #   with:
